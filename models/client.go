@@ -37,4 +37,5 @@ type CareInfo struct{
     Goals               []string    `bson: "goals" json: "goals"`
     Supports            string      `bson: "supports" json: "supports"`
     MobilityRequirement string      `bson: "mobility_requirement" json: "mobility_requirement"`
+    AccessibilityNeeds  string      `bson: "accessibility_needs" json: "accessibility_need"`
 }
