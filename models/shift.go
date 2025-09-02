@@ -28,3 +28,10 @@ type Shift struct {
 	CreatedAt time.Time `bson: "created_at" json: "created_at"`
 	UpdatedAt time.Time `bson: "updated_at" json: "updated_at"`
 }
+
+type Location struct {
+	Latitude  float64   `bson: "latitude" json: "latitude"`
+	Longitude float64   `bson: "longitude" json: "longitude"`
+	Address   string    `bson: "address" json: "address"`
+	Timestamp time.Time `bson: "timestamp" json: "timestamp"`
+}
