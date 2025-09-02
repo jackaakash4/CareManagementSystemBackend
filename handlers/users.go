@@ -88,3 +88,37 @@ func getUserByID(c *gin.Context) {
 
 	c.JSON(http.StatusOK, user)
 }
+
+func updateUser(c *gin.Context) {
+	id := c.Param("id")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid user id",
+		})
+		return
+	}
+	var updateData map[string]interface{}
+
+	if err := c.ShouldBindJSON(&userData); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	updateData["updated_at"] = time.Now()
+
+	collection := db.Collection("users")
+	_, err = collection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id", objectID}.
+			bson.M{"$set", updateData},
+	)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to update the user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User updated sucessfully",
+	})
+}
