@@ -122,3 +122,32 @@ func updateUser(c *gin.Context) {
 		"message": "User updated sucessfully",
 	})
 }
+
+func deleteUser(c *gin.Context) {
+	id := c.Param("id")
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid user ID"})
+		return
+	}
+
+	collection := db.Collection("users")
+	_, err = collection.UpdateOne(
+		context.TODO(),
+		bson.M{"_id": objectID},
+		bson.M{"$set": bson.M{
+			"is_active":  false,
+			"updated_at": time.Now(),
+		},
+		},
+	)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete the user"})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "User is deactivaated sucessfully",
+	})
+}
