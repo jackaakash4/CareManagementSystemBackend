@@ -63,3 +63,28 @@ func getUsers(c *gin.Context) {
 
 	c.JSON(http.StatusOK, users)
 }
+
+func getUserByID(c *gin.Context) {
+	id := c.Param("id")
+	objectID, err := primitive.ObjectIDFromHex(id)
+
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "invalid user ID",
+		})
+		return
+	}
+
+	collection := db.Collection("users")
+	var user User
+
+	err = collection.FindOne(context.TODO(), bson.M{"_id": objectID}).Decode(&user)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid user ID",
+		})
+		return
+	}
+
+	c.JSON(http.StatusOK, user)
+}
